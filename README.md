@@ -89,7 +89,7 @@ AI:  已归档至 openspec/changes/archive/2025-01-23-add-dark-mode/
 全局安装 OpenSpec：
 
 ```bash
-npm install -g openspec-cn/openspec
+npm install -g @openspeccn/openspec@latest
 ```
 
 然后导航到你的项目目录并初始化：
@@ -139,7 +139,7 @@ AI 编码助手很强大，但当需求仅存在于聊天记录中时，它们�
 **升级包**
 
 ```bash
-npm install -g openspec-cn/openspec
+npm install -g @openspeccn/openspec@latest
 ```
 
 **刷新 Agent 指令**
