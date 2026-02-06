@@ -1,17 +1,17 @@
-# Supported Tools
+# 支持的工具 (Supported Tools)
 
-OpenSpec works with 20+ AI coding assistants. When you run `openspec init`, you'll be prompted to select which tools you use, and OpenSpec will configure the appropriate integrations.
+OpenSpec 可与 20 多个 AI 编码助手配合使用。当你运行 `openspec init` 时，系统会提示你选择你使用的工具，OpenSpec 将配置相应的集成。
 
-## How It Works
+## 工作原理
 
-For each tool you select, OpenSpec installs:
+对于你选择的每个工具，OpenSpec 安装：
 
-1. **Skills** — Reusable instruction files that power the `/opsx:*` workflow commands
-2. **Commands** — Tool-specific slash command bindings
+1. **技能 (Skills)** — 支持 `/opsx:*` 工作流命令的可重用指令文件
+2. **命令 (Commands)** — 特定于工具的斜杠命令绑定
 
-## Tool Directory Reference
+## 工具目录参考
 
-| Tool | Skills Location | Commands Location |
+| 工具 | 技能位置 | 命令位置 |
 |------|-----------------|-------------------|
 | Amazon Q Developer | `.amazonq/skills/` | `.amazonq/prompts/` |
 | Antigravity | `.agent/skills/` | `.agent/workflows/` |
@@ -36,52 +36,52 @@ For each tool you select, OpenSpec installs:
 | Trae | `.trae/skills/` | `.trae/skills/` (via `/openspec-*`) |
 | Windsurf | `.windsurf/skills/` | `.windsurf/workflows/` |
 
-\* Codex commands are installed to the global home directory (`~/.codex/prompts/` or `$CODEX_HOME/prompts/`), not the project directory.
+\* Codex 命令安装在全局主目录 (`~/.codex/prompts/` 或 `$CODEX_HOME/prompts/`)，而不是项目目录。
 
-## Non-Interactive Setup
+## 非交互式设置
 
-For CI/CD or scripted setup, use the `--tools` flag:
+对于 CI/CD 或脚本化设置，使用 `--tools` 标志：
 
 ```bash
-# Configure specific tools
+# 配置特定工具
 openspec init --tools claude,cursor
 
-# Configure all supported tools
+# 配置所有支持的工具
 openspec init --tools all
 
-# Skip tool configuration
+# 跳过工具配置
 openspec init --tools none
 ```
 
-**Available tool IDs:** `amazon-q`, `antigravity`, `auggie`, `claude`, `cline`, `codebuddy`, `codex`, `continue`, `costrict`, `crush`, `cursor`, `factory`, `gemini`, `github-copilot`, `iflow`, `kilocode`, `opencode`, `qoder`, `qwen`, `roocode`, `trae`, `windsurf`
+**可用工具 ID：** `amazon-q`, `antigravity`, `auggie`, `claude`, `cline`, `codebuddy`, `codex`, `continue`, `costrict`, `crush`, `cursor`, `factory`, `gemini`, `github-copilot`, `iflow`, `kilocode`, `opencode`, `qoder`, `qwen`, `roocode`, `trae`, `windsurf`
 
-## What Gets Installed
+## 安装了什么
 
-For each tool, OpenSpec generates 10 skill files that power the OPSX workflow:
+对于每个工具，OpenSpec 生成 10 个支持 OPSX 工作流的技能文件：
 
-| Skill | Purpose |
+| 技能 | 用途 |
 |-------|---------|
-| `openspec-explore` | Thinking partner for exploring ideas |
-| `openspec-new-change` | Start a new change |
-| `openspec-continue-change` | Create the next artifact |
-| `openspec-ff-change` | Fast-forward through all planning artifacts |
-| `openspec-apply-change` | Implement tasks |
-| `openspec-verify-change` | Verify implementation completeness |
-| `openspec-sync-specs` | Sync delta specs to main (optional—archive prompts if needed) |
-| `openspec-archive-change` | Archive a completed change |
-| `openspec-bulk-archive-change` | Archive multiple changes at once |
-| `openspec-onboard` | Guided onboarding through a complete workflow cycle |
+| `openspec-explore` | 探索想法的思维伙伴 |
+| `openspec-new-change` | 开始一个新的变更 |
+| `openspec-continue-change` | 创建下一个工件 |
+| `openspec-ff-change` | 快进通过所有规划工件 |
+| `openspec-apply-change` | 实施任务 |
+| `openspec-verify-change` | 验证实施完整性 |
+| `openspec-sync-specs` | 同步增量规范到主规范（可选——如果需要归档提示） |
+| `openspec-archive-change` | 归档已完成的变更 |
+| `openspec-bulk-archive-change` | 一次归档多个变更 |
+| `openspec-onboard` | 引导完成一个完整工作流周期的入职培训 |
 
-These skills are invoked via slash commands like `/opsx:new`, `/opsx:apply`, etc. See [Commands](commands.md) for the full list.
+这些技能通过 `/opsx:new`, `/opsx:apply` 等斜杠命令调用。查看 [命令](commands.md) 获取完整列表。
 
-## Adding a New Tool
+## 添加新工具
 
-Want to add support for another AI coding assistant? Check out the [command adapter pattern](../CONTRIBUTING.md) or open an issue on GitHub.
+想添加对另一个 AI 编码助手的支持？查看 [命令适配器模式](../CONTRIBUTING.md) 或在 GitHub 上提交 issue。
 
 ---
 
-## Related
+## 相关
 
-- [CLI Reference](cli.md) — Terminal commands
-- [Commands](commands.md) — Slash commands and skills
-- [Getting Started](getting-started.md) — First-time setup
+- [CLI 参考](cli.md) — 终端命令
+- [命令](commands.md) — 斜杠命令和技能
+- [快速开始](getting-started.md) — 首次设置

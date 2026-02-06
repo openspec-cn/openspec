@@ -1,70 +1,69 @@
-# instruction-loader Specification
+# instruction-loader 规范
 
-## Purpose
-The instruction-loader loads instruction templates from schema directories, validates and enriches them with metadata and parameters (such as change context and dependency status), and exposes them for use by downstream services including template retrieval, parameter substitution, and enrichment.
+## 目的
+instruction-loader 从 schema 目录加载指令模板，使用元数据和参数（例如变更上下文和依赖项状态）对其进行验证和丰富，并将其公开以供下游服务使用，包括模板检索、参数替换和丰富。
 
-## Requirements
-### Requirement: Template Loading
-The system SHALL load templates from schema directories.
+## 需求
+### 需求：模板加载
+系统必须从 schema 目录加载模板。
 
-#### Scenario: Load template from schema directory
-- **WHEN** `loadTemplate(schemaName, templatePath)` is called
-- **THEN** the system loads the template from `schemas/<schemaName>/templates/<templatePath>`
+#### 场景：从 schema 目录加载模板
+- **当** 调用 `loadTemplate(schemaName, templatePath)` 时
+- **那么** 系统从 `schemas/<schemaName>/templates/<templatePath>` 加载模板
 
-#### Scenario: Template file not found
-- **WHEN** a template file does not exist in the schema's templates directory
-- **THEN** the system throws an error with the template path
+#### 场景：未找到模板文件
+- **当** 模板文件不存在于 schema 的模板目录中时
+- **那么** 系统抛出包含模板路径的错误
 
-### Requirement: Change Context Loading
-The system SHALL load change context combining graph and completion state.
+### 需求：变更上下文加载
+系统必须加载结合了图形和完成状态的变更上下文。
 
-#### Scenario: Load context for existing change
-- **WHEN** `loadChangeContext(projectRoot, changeName)` is called for an existing change
-- **THEN** the system returns a context with graph, completed set, schema name, and change info
+#### 场景：为现有变更加载上下文
+- **当** 为现有变更调用 `loadChangeContext(projectRoot, changeName)` 时
+- **那么** 系统返回包含图形、已完成集合、schema 名称和变更信息的上下文
 
-#### Scenario: Load context with custom schema
-- **WHEN** `loadChangeContext(projectRoot, changeName, schemaName)` is called
-- **THEN** the system uses the specified schema instead of default
+#### 场景：使用自定义 schema 加载上下文
+- **当** 调用 `loadChangeContext(projectRoot, changeName, schemaName)` 时
+- **那么** 系统使用指定的 schema 而不是默认值
 
-#### Scenario: Load context for non-existent change directory
-- **WHEN** `loadChangeContext` is called for a non-existent change directory
-- **THEN** the system returns context with empty completed set
+#### 场景：为不存在的变更目录加载上下文
+- **当** 为不存在的变更目录调用 `loadChangeContext` 时
+- **那么** 系统返回带有空已完成集合的上下文
 
-### Requirement: Template Enrichment
-The system SHALL enrich templates with change-specific context.
+### 需求：模板丰富
+系统必须使用特定于变更的上下文丰富模板。
 
-#### Scenario: Include artifact metadata
-- **WHEN** instructions are generated for an artifact
-- **THEN** the output includes change name, artifact ID, schema name, and output path
+#### 场景：包含产物元数据
+- **当** 为产物生成指令时
+- **那么** 输出包含变更名称、产物 ID、schema 名称和输出路径
 
-#### Scenario: Include dependency status
-- **WHEN** an artifact has dependencies
-- **THEN** the output shows each dependency with completion status (done/missing)
+#### 场景：包含依赖项状态
+- **当** 产物具有依赖项时
+- **那么** 输出显示每个依赖项的完成状态（已完成/缺失）
 
-#### Scenario: Include unlocked artifacts
-- **WHEN** instructions are generated
-- **THEN** the output includes which artifacts become available after this one
+#### 场景：包含已解锁产物
+- **当** 生成指令时
+- **那么** 输出包含在此之后变得可用的产物
 
-#### Scenario: Root artifact indicator
-- **WHEN** an artifact has no dependencies
-- **THEN** the dependency section indicates this is a root artifact
+#### 场景：根产物指示器
+- **当** 产物没有依赖项时
+- **那么** 依赖项部分指示这是一个根产物
 
-### Requirement: Status Formatting
-The system SHALL format change status as readable output.
+### 需求：状态格式化
+系统必须将变更状态格式化为可读输出。
 
-#### Scenario: All artifacts completed
-- **WHEN** all artifacts are completed
-- **THEN** status shows all artifacts as "done"
+#### 场景：所有产物已完成
+- **当** 所有产物都已完成时
+- **那么** 状态将所有产物显示为 "done"
 
-#### Scenario: Mixed completion status
-- **WHEN** some artifacts are completed
-- **THEN** status shows completed as "done", ready as "ready", blocked as "blocked"
+#### 场景：混合完成状态
+- **当** 一些产物已完成时
+- **那么** 状态将已完成的显示为 "done"，准备好的显示为 "ready"，受阻的显示为 "blocked"
 
-#### Scenario: Blocked artifact details
-- **WHEN** an artifact is blocked
-- **THEN** status shows which dependencies are missing
+#### 场景：受阻产物详情
+- **当** 产物受阻时
+- **那么** 状态显示缺少哪些依赖项
 
-#### Scenario: Include output paths
-- **WHEN** status is formatted
-- **THEN** each artifact shows its output path pattern
-
+#### 场景：包含输出路径
+- **当** 格式化状态时
+- **那么** 每个产物显示其输出路径模式

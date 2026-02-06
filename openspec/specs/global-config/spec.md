@@ -1,101 +1,101 @@
-# global-config Specification
+# global-config 规范
 
-## Purpose
+## 目的
 
-This spec defines how OpenSpec resolves, reads, and writes user-level global configuration. It governs the `src/core/global-config.ts` module, which provides the foundation for storing user preferences, feature flags, and settings that persist across projects. The spec ensures cross-platform compatibility by following XDG Base Directory Specification with platform-specific fallbacks, and guarantees forward/backward compatibility through schema evolution rules.
-## Requirements
-### Requirement: Global configuration storage
-The system SHALL store global configuration in `~/.config/openspec/config.json`, including telemetry state with `anonymousId` and `noticeSeen` fields.
+本规范定义了 OpenSpec 如何解析、读取和写入用户级全局配置。它管理 `src/core/global-config.ts` 模块，该模块为存储跨项目持久存在的用户首选项、功能标志和设置提供了基础。该规范通过遵循带有特定于平台回退的 XDG 基本目录规范确保跨平台兼容性，并通过 schema 演进规则保证向前/向后兼容性。
 
-#### Scenario: Initial config creation
-- **WHEN** no global config file exists
-- **AND** the first telemetry event is about to be sent
-- **THEN** the system creates `~/.config/openspec/config.json` with telemetry configuration
+## 需求
+### 需求：全局配置存储
+系统必须将全局配置存储在 `~/.config/openspec/config.json` 中，包括带有 `anonymousId` 和 `noticeSeen` 字段的遥测状态。
 
-#### Scenario: Telemetry config structure
-- **WHEN** reading or writing telemetry configuration
-- **THEN** the config contains a `telemetry` object with `anonymousId` (string UUID) and `noticeSeen` (boolean) fields
+#### 场景：初始配置创建
+- **当** 不存在全局配置文件时
+- **并且** 即将发送第一个遥测事件时
+- **那么** 系统创建带有遥测配置的 `~/.config/openspec/config.json`
 
-#### Scenario: Config file format
-- **WHEN** storing configuration
-- **THEN** the system writes valid JSON that can be read and modified by users
+#### 场景：遥测配置结构
+- **当** 读取或写入遥测配置时
+- **那么** 配置包含一个带有 `anonymousId`（字符串 UUID）和 `noticeSeen`（布尔值）字段的 `telemetry` 对象
 
-#### Scenario: Existing config preservation
-- **WHEN** adding telemetry fields to an existing config file
-- **THEN** the system preserves all existing configuration fields
+#### 场景：配置文件格式
+- **当** 存储配置时
+- **那么** 系统写入可由用户读取和修改的有效 JSON
 
-### Requirement: Global Config Directory Path
+#### 场景：现有配置保留
+- **当** 向现有配置文件添加遥测字段时
+- **那么** 系统保留所有现有配置字段
 
-The system SHALL resolve the global configuration directory path following XDG Base Directory Specification with platform-specific fallbacks.
+### 需求：全局配置目录路径
 
-#### Scenario: Unix/macOS with XDG_CONFIG_HOME set
-- **WHEN** `$XDG_CONFIG_HOME` environment variable is set to `/custom/config`
-- **THEN** `getGlobalConfigDir()` returns `/custom/config/openspec`
+系统必须按照带有特定于平台回退的 XDG 基本目录规范解析全局配置目录路径。
 
-#### Scenario: Unix/macOS without XDG_CONFIG_HOME
-- **WHEN** `$XDG_CONFIG_HOME` environment variable is not set
-- **AND** the platform is Unix or macOS
-- **THEN** `getGlobalConfigDir()` returns `~/.config/openspec` (expanded to absolute path)
+#### 场景：设置了 XDG_CONFIG_HOME 的 Unix/macOS
+- **当** `$XDG_CONFIG_HOME` 环境变量设置为 `/custom/config` 时
+- **那么** `getGlobalConfigDir()` 返回 `/custom/config/openspec`
 
-#### Scenario: Windows platform
-- **WHEN** the platform is Windows
-- **AND** `%APPDATA%` is set to `C:\Users\User\AppData\Roaming`
-- **THEN** `getGlobalConfigDir()` returns `C:\Users\User\AppData\Roaming\openspec`
+#### 场景：未设置 XDG_CONFIG_HOME 的 Unix/macOS
+- **当** `$XDG_CONFIG_HOME` 环境变量未设置时
+- **并且** 平台是 Unix 或 macOS
+- **那么** `getGlobalConfigDir()` 返回 `~/.config/openspec`（扩展为绝对路径）
 
-### Requirement: Global Config Loading
+#### 场景：Windows 平台
+- **当** 平台是 Windows 时
+- **并且** `%APPDATA%` 设置为 `C:\Users\User\AppData\Roaming`
+- **那么** `getGlobalConfigDir()` 返回 `C:\Users\User\AppData\Roaming\openspec`
 
-The system SHALL load global configuration from the config directory with sensible defaults when the config file does not exist or cannot be parsed.
+### 需求：全局配置加载
 
-#### Scenario: Config file exists and is valid
-- **WHEN** `config.json` exists in the global config directory
-- **AND** the file contains valid JSON matching the config schema
-- **THEN** `getGlobalConfig()` returns the parsed configuration
+当配置文件不存在或无法解析时，系统必须使用合理的默认值从配置目录加载全局配置。
 
-#### Scenario: Config file does not exist
-- **WHEN** `config.json` does not exist in the global config directory
-- **THEN** `getGlobalConfig()` returns the default configuration
-- **AND** no directory or file is created
+#### 场景：配置文件存在且有效
+- **当** `config.json` 存在于全局配置目录中时
+- **并且** 文件包含匹配配置 schema 的有效 JSON
+- **那么** `getGlobalConfig()` 返回解析后的配置
 
-#### Scenario: Config file is invalid JSON
-- **WHEN** `config.json` exists but contains invalid JSON
-- **THEN** `getGlobalConfig()` returns the default configuration
-- **AND** a warning is logged to stderr
+#### 场景：配置文件不存在
+- **当** `config.json` 不存在于全局配置目录中时
+- **那么** `getGlobalConfig()` 返回默认配置
+- **并且** 不创建目录或文件
 
-### Requirement: Global Config Saving
+#### 场景：配置文件是无效 JSON
+- **当** `config.json` 存在但包含无效 JSON 时
+- **那么** `getGlobalConfig()` 返回默认配置
+- **并且** 将警告记录到 stderr
 
-The system SHALL save global configuration to the config directory, creating the directory if it does not exist.
+### 需求：全局配置保存
 
-#### Scenario: Save config to new directory
-- **WHEN** `saveGlobalConfig(config)` is called
-- **AND** the global config directory does not exist
-- **THEN** the directory is created
-- **AND** `config.json` is written with the provided configuration
+系统必须将全局配置保存到配置目录，如果目录不存在则创建它。
 
-#### Scenario: Save config to existing directory
-- **WHEN** `saveGlobalConfig(config)` is called
-- **AND** the global config directory already exists
-- **THEN** `config.json` is written (overwriting if exists)
+#### 场景：保存配置到新目录
+- **当** 调用 `saveGlobalConfig(config)` 时
+- **并且** 全局配置目录不存在
+- **那么** 创建目录
+- **并且** 用提供的配置写入 `config.json`
 
-### Requirement: Default Configuration
+#### 场景：保存配置到现有目录
+- **当** 调用 `saveGlobalConfig(config)` 时
+- **并且** 全局配置目录已存在
+- **那么** 写入 `config.json`（如果存在则覆盖）
 
-The system SHALL provide a default configuration that is used when no config file exists.
+### 需求：默认配置
 
-#### Scenario: Default config structure
-- **WHEN** no config file exists
-- **THEN** the default configuration includes an empty `featureFlags` object
+系统必须提供默认配置，当不存在配置文件时使用该配置。
 
-### Requirement: Config Schema Evolution
+#### 场景：默认配置结构
+- **当** 不存在配置文件时
+- **那么** 默认配置包含一个空的 `featureFlags` 对象
 
-The system SHALL merge loaded configuration with default values to ensure new config fields are available even when loading older config files.
+### 需求：配置 Schema 演进
 
-#### Scenario: Config file missing new fields
-- **WHEN** `config.json` exists with `{ "featureFlags": {} }`
-- **AND** the current schema includes a new field `defaultAiTool`
-- **THEN** `getGlobalConfig()` returns `{ featureFlags: {}, defaultAiTool: <default> }`
-- **AND** the loaded values take precedence over defaults for fields that exist in both
+系统必须将加载的配置与默认值合并，以确即使加载旧配置文件时新配置字段也可用。
 
-#### Scenario: Config file has extra unknown fields
-- **WHEN** `config.json` contains fields not in the current schema
-- **THEN** the unknown fields are preserved in the returned configuration
-- **AND** no error or warning is raised
+#### 场景：配置文件缺少新字段
+- **当** `config.json` 存在且包含 `{ "featureFlags": {} }` 时
+- **并且** 当前 schema 包含新字段 `defaultAiTool`
+- **那么** `getGlobalConfig()` 返回 `{ featureFlags: {}, defaultAiTool: <default> }`
+- **并且** 加载的值优先于两者中都存在的字段的默认值
 
+#### 场景：配置文件有额外未知字段
+- **当** `config.json` 包含不在当前 schema 中的字段时
+- **那么** 未知字段保留在返回的配置中
+- **并且** 不引发错误或警告

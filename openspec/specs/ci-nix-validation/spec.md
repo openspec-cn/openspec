@@ -1,107 +1,108 @@
-# ci-nix-validation Specification
+# CI Nix 验证规范 (ci-nix-validation Specification)
 
-## Purpose
+## 目的
 
-Validates Nix flake builds and maintenance scripts in CI to ensure Nix users can reliably install and use OpenSpec. Prevents regressions in Nix support by testing builds and the update-flake.sh script on every pull request and push to main.
-## Requirements
-### Requirement: Nix Flake Build Validation
+在 CI 中验证 Nix flake 构建和维护脚本，以确保 Nix 用户可以可靠地安装和使用 OpenSpec。通过在每次拉取请求 (PR) 和推送到 main 分支时测试构建和 update-flake.sh 脚本，防止 Nix 支持退化。
 
-The CI system SHALL validate that the Nix flake builds successfully on every pull request and push to main.
+## 需求
 
-#### Scenario: Successful flake build
+### 需求：Nix Flake 构建验证
 
-- **WHEN** a pull request or push to main is made
-- **THEN** the CI SHALL execute `nix build` and verify it completes with exit code 0
-- **AND** the build output SHALL contain the openspec binary
+CI 系统必须在每次拉取请求和推送到 main 分支时验证 Nix flake 构建成功。
 
-#### Scenario: Flake build failure
+#### 场景：成功的 flake 构建
 
-- **WHEN** the Nix flake configuration is broken
-- **THEN** the CI job SHALL fail with a non-zero exit code
-- **AND** the CI SHALL prevent merging of the pull request
+- **当** 进行拉取请求或推送到 main 分支时
+- **那么** CI 必须执行 `nix build` 并验证其以退出代码 0 完成
+- **且** 构建输出必须包含 openspec 二进制文件
 
-#### Scenario: Multi-platform support check
+#### 场景：Flake 构建失败
 
-- **WHEN** the flake declares support for multiple systems
-- **THEN** the CI SHALL validate the flake builds on at least Linux (x86_64-linux)
+- **当** Nix flake 配置损坏时
+- **那么** CI 作业必须以非零退出代码失败
+- **且** CI 必须阻止合并拉取请求
 
-### Requirement: Update Script Validation
+#### 场景：多平台支持检查
 
-The CI system SHALL validate that the update-flake.sh script executes successfully and produces valid output.
+- **当** flake 声明支持多个系统时
+- **那么** CI 必须验证 flake 至少在 Linux (x86_64-linux) 上构建成功
 
-#### Scenario: Update script execution
+### 需求：更新脚本验证
 
-- **WHEN** the CI runs the update script validation
-- **THEN** the script SHALL execute without errors
-- **AND** the script SHALL correctly read the version from package.json
-- **AND** the script SHALL validate that flake.nix uses dynamic version from package.json
+CI 系统必须验证 update-flake.sh 脚本执行成功并产生有效的输出。
 
-#### Scenario: Update script with mock hash
+#### 场景：更新脚本执行
 
-- **WHEN** validating the update script in CI
-- **THEN** the script SHALL be able to detect and extract the correct pnpm dependency hash
-- **AND** the flake.nix SHALL be updated with a valid sha256 hash
+- **当** CI 运行更新脚本验证时
+- **那么** 脚本必须无错误执行
+- **且** 脚本必须正确地从 package.json 读取版本
+- **且** 脚本必须验证 flake.nix 使用来自 package.json 的动态版本
 
-### Requirement: CI Job Integration
+#### 场景：带模拟哈希的更新脚本
 
-The Nix validation jobs SHALL be integrated into the existing GitHub Actions workflow and required for merge.
+- **当** 在 CI 中验证更新脚本时
+- **那么** 脚本必须能够检测并提取正确的 pnpm 依赖哈希
+- **且** flake.nix 必须用有效的 sha256 哈希更新
 
-#### Scenario: PR merge requirements
+### 需求：CI 作业集成
 
-- **WHEN** a pull request is created
-- **THEN** the Nix validation job SHALL be included in required checks
-- **AND** the PR SHALL NOT be mergeable until Nix validation passes
+Nix 验证作业必须集成到现有的 GitHub Actions 工作流中，并且合并时必须要求通过。
 
-#### Scenario: Job execution triggers
+#### 场景：PR 合并要求
 
-- **WHEN** code is pushed to a pull request OR pushed to main OR manually triggered
-- **THEN** the Nix validation job SHALL execute automatically
+- **当** 创建拉取请求时
+- **那么** Nix 验证作业必须包含在必需的检查中
+- **且** PR 在 Nix 验证通过之前不得合并
 
-### Requirement: Local Testing Support
+#### 场景：作业执行触发器
 
-The CI workflow SHALL be testable locally using the `act` tool to enable rapid iteration.
+- **当** 代码推送到拉取请求 或 推送到 main 分支 或 手动触发时
+- **那么** Nix 验证作业必须自动执行
 
-#### Scenario: Local CI execution with act
+### 需求：本地测试支持
 
-- **WHEN** a developer runs `act` with the Nix validation workflow
-- **THEN** the workflow SHALL execute in the local Docker environment
-- **AND** the developer SHALL receive feedback on Nix build status without pushing to GitHub
+CI 工作流必须可以使用 `act` 工具在本地进行测试，以实现快速迭代。
 
-#### Scenario: Act configuration compatibility
+#### 场景：使用 act 本地执行 CI
 
-- **WHEN** the workflow is designed
-- **THEN** it SHALL use standard GitHub Actions syntax compatible with `act`
-- **AND** any Nix-specific setup SHALL work in the act Docker environment
+- **当** 开发人员使用 Nix 验证工作流运行 `act` 时
+- **那么** 工作流必须在本地 Docker 环境中执行
+- **且** 开发人员必须在不推送到 GitHub 的情况下收到关于 Nix 构建状态的反馈
 
-### Requirement: Nix Installation in CI
+#### 场景：Act 配置兼容性
 
-The CI environment SHALL have Nix properly installed and configured before running validation.
+- **当** 设计工作流时
+- **那么** 它必须使用与 `act` 兼容的标准 GitHub Actions 语法
+- **且** 任何特定于 Nix 的设置必须在 act Docker 环境中工作
 
-#### Scenario: Nix installation step
+### 需求：CI 中的 Nix 安装
 
-- **WHEN** the Nix validation job starts
-- **THEN** Nix SHALL be installed using the official Nix installer or determinatesystems/nix-installer-action
-- **AND** the Nix installation SHALL be cached for subsequent runs to improve performance
+CI 环境必须在运行验证之前正确安装和配置 Nix。
 
-#### Scenario: Nix configuration for CI
+#### 场景：Nix 安装步骤
 
-- **WHEN** Nix is installed in CI
-- **THEN** it SHALL be configured to work in the GitHub Actions environment
-- **AND** experimental features (flakes, nix-command) SHALL be enabled
+- **当** Nix 验证作业开始时
+- **那么** Nix 必须使用官方 Nix 安装程序或 determinatesystems/nix-installer-action 安装
+- **且** Nix 安装必须被缓存以供后续运行使用，以提高性能
 
-### Requirement: CI Performance Optimization
+#### 场景：CI 的 Nix 配置
 
-The Nix validation SHALL be optimized to minimize CI runtime impact.
+- **当** 在 CI 中安装 Nix 时
+- **那么** 它必须被配置为在 GitHub Actions 环境中工作
+- **且** 必须启用实验性功能 (flakes, nix-command)
 
-#### Scenario: Acceptable runtime
+### 需求：CI 性能优化
 
-- **WHEN** the Nix validation job runs
-- **THEN** it SHALL complete in under 5 minutes on a clean run
-- **AND** with caching, it SHALL complete in under 3 minutes on subsequent runs
+Nix 验证必须经过优化，以尽量减少 CI 运行时的影响。
 
-#### Scenario: Parallel execution
+#### 场景：可接受的运行时间
 
-- **WHEN** multiple CI jobs are running
-- **THEN** the Nix validation job SHALL run in parallel with other validation jobs (tests, lint)
-- **AND** SHALL NOT block other independent checks
+- **当** Nix 验证作业运行时
+- **那么** 它必须在干净运行时 5 分钟内完成
+- **且** 使用缓存时，它必须在后续运行中 3 分钟内完成
 
+#### 场景：并行执行
+
+- **当** 多个 CI 作业正在运行时
+- **那么** Nix 验证作业必须与其他验证作业（测试、lint）并行运行
+- **且** 不得阻塞其他独立检查

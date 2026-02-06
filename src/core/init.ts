@@ -133,7 +133,7 @@ export class InitCommand {
 
     // Check write permissions
     if (!(await FileSystemUtils.ensureWritePermissions(projectPath))) {
-      throw new Error(`Insufficient permissions to write to ${projectPath}`);
+      throw new Error(`无法写入目录：${projectPath}`);
     }
     return extendMode;
   }
@@ -171,21 +171,21 @@ export class InitCommand {
 
     if (!canPrompt) {
       // Non-interactive mode without --force: abort
-      console.log(chalk.red('Legacy files detected in non-interactive mode.'));
-      console.log(chalk.dim('Run interactively to upgrade, or use --force to auto-cleanup.'));
+      console.log(chalk.red('非交互模式下检测到旧文件。'));
+      console.log(chalk.dim('请运行交互模式进行升级，或使用 --force 自动清理。'));
       process.exit(1);
     }
 
     // Interactive mode: prompt for confirmation
     const { confirm } = await import('@inquirer/prompts');
     const shouldCleanup = await confirm({
-      message: 'Upgrade and clean up legacy files?',
+      message: '升级并清理旧文件？',
       default: true,
     });
 
     if (!shouldCleanup) {
-      console.log(chalk.dim('Initialization cancelled.'));
-      console.log(chalk.dim('Run with --force to skip this prompt, or manually remove legacy files.'));
+      console.log(chalk.dim('初始化已取消。'));
+      console.log(chalk.dim('运行 --force 跳过此提示，或手动删除旧文件。'));
       process.exit(0);
     }
 
@@ -193,11 +193,11 @@ export class InitCommand {
   }
 
   private async performLegacyCleanup(projectPath: string, detection: LegacyDetectionResult): Promise<void> {
-    const spinner = ora('Cleaning up legacy files...').start();
+    const spinner = ora('正在清理旧文件...').start();
 
     const result = await cleanupLegacyArtifacts(projectPath, detection);
 
-    spinner.succeed('Legacy files cleaned up');
+    spinner.succeed('旧文件已清理');
 
     const summary = formatCleanupSummary(result);
     if (summary) {
@@ -227,7 +227,7 @@ export class InitCommand {
 
     if (!canPrompt || validTools.length === 0) {
       throw new Error(
-        `Missing required option --tools. Valid tools:\n  ${validTools.join('\n  ')}\n\nUse --tools all, --tools none, or --tools claude,cursor,...`
+        `缺少必需选项 --tools。有效工具：\n  ${validTools.join('\n  ')}\n\n请使用 --tools all, --tools none, 或 --tools claude,cursor,...`
       );
     }
 
@@ -256,14 +256,14 @@ export class InitCommand {
       });
 
     const selectedTools = await searchableMultiSelect({
-      message: `Select tools to set up (${validTools.length} available)`,
+      message: `选择要设置的工具 (${validTools.length} 个可用)`,
       pageSize: 15,
       choices: sortedChoices,
-      validate: (selected: string[]) => selected.length > 0 || 'Select at least one tool',
+      validate: (selected: string[]) => selected.length > 0 || '至少选择一个工具',
     });
 
     if (selectedTools.length === 0) {
-      throw new Error('At least one tool must be selected');
+      throw new Error('必须至少选择一个工具');
     }
 
     return selectedTools;
@@ -386,7 +386,7 @@ export class InitCommand {
       return;
     }
 
-    const spinner = this.startSpinner('Creating OpenSpec structure...');
+    const spinner = this.startSpinner('正在创建 OpenSpec 结构...');
 
     const directories = [
       openspecPath,
@@ -401,7 +401,7 @@ export class InitCommand {
 
     spinner.stopAndPersist({
       symbol: PALETTE.white('▌'),
-      text: PALETTE.white('OpenSpec structure created'),
+      text: PALETTE.white('OpenSpec 结构已创建'),
     });
   }
 
@@ -429,7 +429,7 @@ export class InitCommand {
 
     // Process each tool
     for (const tool of tools) {
-      const spinner = ora(`Setting up ${tool.name}...`).start();
+      const spinner = ora(`正在设置 ${tool.name}...`).start();
 
       try {
         // Use tool-specific skillsDir
@@ -462,7 +462,7 @@ export class InitCommand {
           commandsSkipped.push(tool.value);
         }
 
-        spinner.succeed(`Setup complete for ${tool.name}`);
+        spinner.succeed(`设置完成：${tool.name}`);
 
         if (tool.wasConfigured) {
           refreshedTools.push(tool);
@@ -470,7 +470,7 @@ export class InitCommand {
           createdTools.push(tool);
         }
       } catch (error) {
-        spinner.fail(`Failed for ${tool.name}`);
+        spinner.fail(`失败：${tool.name}`);
         failedTools.push({ name: tool.name, error: error as Error });
       }
     }
@@ -522,15 +522,15 @@ export class InitCommand {
     configStatus: 'created' | 'exists' | 'skipped'
   ): void {
     console.log();
-    console.log(chalk.bold('OpenSpec Setup Complete'));
+    console.log(chalk.bold('OpenSpec 设置完成'));
     console.log();
 
     // Show created vs refreshed tools
     if (results.createdTools.length > 0) {
-      console.log(`Created: ${results.createdTools.map((t) => t.name).join(', ')}`);
+      console.log(`已创建：${results.createdTools.map((t) => t.name).join(', ')}`);
     }
     if (results.refreshedTools.length > 0) {
-      console.log(`Refreshed: ${results.refreshedTools.map((t) => t.name).join(', ')}`);
+      console.log(`已刷新：${results.refreshedTools.map((t) => t.name).join(', ')}`);
     }
 
     // Show counts
@@ -539,51 +539,51 @@ export class InitCommand {
       const toolDirs = [...new Set(successfulTools.map((t) => t.skillsDir))].join(', ');
       const hasCommands = results.commandsSkipped.length < successfulTools.length;
       if (hasCommands) {
-        console.log(`${getSkillTemplates().length} skills and ${getCommandContents().length} commands in ${toolDirs}/`);
+        console.log(`${getSkillTemplates().length} 个技能和 ${getCommandContents().length} 个命令在 ${toolDirs}/`);
       } else {
-        console.log(`${getSkillTemplates().length} skills in ${toolDirs}/`);
+        console.log(`${getSkillTemplates().length} 个技能在 ${toolDirs}/`);
       }
     }
 
     // Show failures
     if (results.failedTools.length > 0) {
-      console.log(chalk.red(`Failed: ${results.failedTools.map((f) => `${f.name} (${f.error.message})`).join(', ')}`));
+      console.log(chalk.red(`失败：${results.failedTools.map((f) => `${f.name} (${f.error.message})`).join(', ')}`));
     }
 
     // Show skipped commands
     if (results.commandsSkipped.length > 0) {
-      console.log(chalk.dim(`Commands skipped for: ${results.commandsSkipped.join(', ')} (no adapter)`));
+      console.log(chalk.dim(`已跳过命令：${results.commandsSkipped.join(', ')} (no adapter)`));
     }
 
     // Config status
     if (configStatus === 'created') {
-      console.log(`Config: openspec/config.yaml (schema: ${DEFAULT_SCHEMA})`);
+      console.log(`配置：openspec/config.yaml (schema: ${DEFAULT_SCHEMA})`);
     } else if (configStatus === 'exists') {
       // Show actual filename (config.yaml or config.yml)
       const configYaml = path.join(projectPath, OPENSPEC_DIR_NAME, 'config.yaml');
       const configYml = path.join(projectPath, OPENSPEC_DIR_NAME, 'config.yml');
       const configName = fs.existsSync(configYaml) ? 'config.yaml' : fs.existsSync(configYml) ? 'config.yml' : 'config.yaml';
-      console.log(`Config: openspec/${configName} (exists)`);
+      console.log(`配置：openspec/${configName} (已存在)`);
     } else {
-      console.log(chalk.dim(`Config: skipped (non-interactive mode)`));
+      console.log(chalk.dim(`配置：已跳过（非交互模式）`));
     }
 
     // Getting started
     console.log();
-    console.log(chalk.bold('Getting started:'));
-    console.log('  /opsx:new       Start a new change');
-    console.log('  /opsx:continue  Create the next artifact');
-    console.log('  /opsx:apply     Implement tasks');
+    console.log(chalk.bold('快速开始：'));
+    console.log('  /opsx:new       开始新的变更');
+    console.log('  /opsx:continue  创建下一个产物');
+    console.log('  /opsx:apply     实施任务');
 
     // Links
     console.log();
-    console.log(`Learn more: ${chalk.cyan('https://github.com/Fission-AI/OpenSpec')}`);
-    console.log(`Feedback:   ${chalk.cyan('https://github.com/Fission-AI/OpenSpec/issues')}`);
+    console.log(`了解更多：${chalk.cyan('https://github.com/openspec-cn/openspec')}`);
+    console.log(`反馈：    ${chalk.cyan('https://github.com/openspec-cn/openspec/issues')}`);
 
     // Restart instruction if any tools were configured
     if (results.createdTools.length > 0 || results.refreshedTools.length > 0) {
       console.log();
-      console.log(chalk.white('Restart your IDE for slash commands to take effect.'));
+      console.log(chalk.white('重启 IDE 以使斜杠命令生效。'));
     }
 
     console.log();

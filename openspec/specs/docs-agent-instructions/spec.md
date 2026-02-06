@@ -1,38 +1,38 @@
-# docs-agent-instructions Specification
+# docs-agent-instructions 规范
 
-## Purpose
-TBD - created by archiving change improve-agent-instruction-usability. Update Purpose after archive.
-## Requirements
-### Requirement: Quick Reference Placement
-The AI instructions SHALL begin with a quick-reference section that surfaces required file structures, templates, and formatting rules before any narrative guidance.
+## 目的
+待定 - 由归档变更 improve-agent-instruction-usability 创建。归档后更新目的。
 
-#### Scenario: Loading templates at the top
-- **WHEN** `openspec/AGENTS.md` is regenerated or updated
-- **THEN** the first substantive section after the title SHALL provide copy-ready headings for `proposal.md`, `tasks.md`, spec deltas, and scenario formatting
-- **AND** link each template to the corresponding workflow step for deeper reading
+## 需求
+### 需求：快速参考位置
+AI 指令必须以快速参考部分开头，在任何叙述性指导之前展示所需的文件结构、模板和格式规则。
 
-### Requirement: Embedded Templates and Examples
-`openspec/AGENTS.md` SHALL include complete copy/paste templates and inline examples exactly where agents make corresponding edits.
+#### 场景：在顶部加载模板
+- **当** `openspec/AGENTS.md` 重新生成或更新时
+- **那么** 标题后的第一个实质性部分必须提供用于 `proposal.md`, `tasks.md`, 规范增量和场景格式化的可直接复制的标题
+- **并且** 将每个模板链接到相应的工作流步骤以进行更深入的阅读
 
-#### Scenario: Providing file templates
-- **WHEN** authors reach the workflow guidance for drafting proposals and deltas
-- **THEN** provide fenced Markdown templates that match the required structure (`## Why`, `## ADDED Requirements`, `#### Scenario:` etc.)
-- **AND** accompany each template with a brief example showing correct header usage and scenario bullets
+### 需求：嵌入式模板和示例
+`openspec/AGENTS.md` 必须在代理进行相应编辑的确切位置包含完整的复制/粘贴模板和内联示例。
 
-### Requirement: Pre-validation Checklist
-`openspec/AGENTS.md` SHALL offer a concise pre-validation checklist that highlights common formatting mistakes before running `openspec validate`.
+#### 场景：提供文件模板
+- **当** 作者到达起草提案和增量的工作流指导时
+- **那么** 提供与所需结构（`## Why`, `## ADDED Requirements`, `#### Scenario:` 等）匹配的受保护 Markdown 模板
+- **并且** 随每个模板附带一个简短示例，显示正确的标题用法和场景项目符号
 
-#### Scenario: Highlighting common validation failures
-- **WHEN** a reader reaches the validation guidance
-- **THEN** present a checklist reminding them to verify requirement headers, scenario formatting, and delta sections
-- **AND** include reminders about at least `#### Scenario:` usage and descriptive requirement text before scenarios
+### 需求：预验证检查清单
+`openspec/AGENTS.md` 必须提供简洁的预验证检查清单，在运行 `openspec validate` 之前突出显示常见的格式错误。
 
-### Requirement: Progressive Disclosure of Workflow Guidance
-The documentation SHALL separate beginner essentials from advanced topics so newcomers can focus on core steps without losing access to advanced workflows.
+#### 场景：突出显示常见验证失败
+- **当** 读者到达验证指导时
+- **那么** 提供一个检查清单，提醒他们验证需求标题、场景格式和增量部分
+- **并且** 包含关于至少 `#### Scenario:` 用法和场景前描述性需求文本的提醒
 
-#### Scenario: Organizing beginner and advanced sections
-- **WHEN** reorganizing `openspec/AGENTS.md`
-- **THEN** keep an introductory section limited to the minimum steps (scaffold, draft, validate, request review)
-- **AND** move advanced topics (multi-capability changes, archiving details, tooling deep dives) into clearly labeled later sections
-- **AND** provide anchor links from the quick-reference to those advanced sections
+### 需求：工作流指导的渐进式披露
+文档必须将初学者基础知识与高级主题分开，以便新手可以专注于核心步骤，而不会失去访问高级工作流的机会。
 
+#### 场景：组织初学者和高级部分
+- **当** 重新组织 `openspec/AGENTS.md` 时
+- **那么** 保持介绍部分仅限于最少步骤（搭建、起草、验证、请求审查）
+- **并且** 将高级主题（多功能变更、归档细节、工具深入研究）移动到清晰标记的后续部分
+- **并且** 提供从快速参考到这些高级部分的锚点链接

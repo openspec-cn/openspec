@@ -1,107 +1,109 @@
-# CLI Archive Command Specification
+# CLI 归档命令规范 (CLI Archive Command Specification)
 
-## Purpose
-The archive command moves completed changes from the active changes directory to the archive folder with date-based naming, following OpenSpec conventions.
+## 目的
+归档命令按照 OpenSpec 约定，将已完成的变更从活跃变更目录移动到带有基于日期命名的归档文件夹中。
 
-## Command Syntax
+## 命令语法
 ```bash
 openspec archive [change-name] [--yes|-y]
 ```
 
-Options:
-- `--yes`, `-y`: Skip confirmation prompts (for automation)
-## Requirements
-### Requirement: Change Selection
+选项：
+- `--yes`, `-y`: 跳过确认提示（用于自动化）
 
-The command SHALL support both interactive and direct change selection methods.
+## 需求
 
-#### Scenario: Interactive selection
+### 需求：变更选择
 
-- **WHEN** no change-name is provided
-- **THEN** display interactive list of available changes (excluding archive/)
-- **AND** allow user to select one
+该命令必须支持交互式和直接变更选择方法。
 
-#### Scenario: Direct selection
+#### 场景：交互式选择
 
-- **WHEN** change-name is provided
-- **THEN** use that change directly
-- **AND** validate it exists
+- **当** 未提供 change-name 时
+- **那么** 显示可用变更的交互式列表（不包括 archive/）
+- **且** 允许用户选择一个
 
-### Requirement: Task Completion Check
+#### 场景：直接选择
 
-The command SHALL verify task completion status before archiving to prevent premature archival.
+- **当** 提供了 change-name 时
+- **那么** 直接使用该变更
+- **且** 验证其存在
 
-#### Scenario: Incomplete tasks found
+### 需求：任务完成检查
 
-- **WHEN** incomplete tasks are found (marked with `- [ ]`)
-- **THEN** display all incomplete tasks to the user
-- **AND** prompt for confirmation to continue
-- **AND** default to "No" for safety
+该命令必须在归档前验证任务完成状态，以防止过早归档。
 
-#### Scenario: All tasks complete
+#### 场景：发现未完成任务
 
-- **WHEN** all tasks are complete OR no tasks.md exists
-- **THEN** proceed with archiving without prompting
+- **当** 发现未完成任务（标记为 `- [ ]`）时
+- **那么** 向用户显示所有未完成任务
+- **且** 提示确认是否继续
+- **且** 默认为“否”以确保安全
 
-### Requirement: Archive Process
+#### 场景：所有任务完成
 
-The archive operation SHALL follow a structured process to safely move changes to the archive.
+- **当** 所有任务已完成 或 不存在 tasks.md 时
+- **那么** 无需提示直接进行归档
 
-#### Scenario: Performing archive
+### 需求：归档过程
 
-- **WHEN** archiving a change
-- **THEN** execute these steps:
-  1. Create archive/ directory if it doesn't exist
-  2. Generate target name as `YYYY-MM-DD-[change-name]` using current date
-  3. Check if target directory already exists
-  4. Update main specs from the change's future state specs (see Spec Update Process below)
-  5. Move the entire change directory to the archive location
+归档操作必须遵循结构化过程，以安全地将变更移动到归档中。
 
-#### Scenario: Archive already exists
+#### 场景：执行归档
 
-- **WHEN** target archive already exists
-- **THEN** fail with error message
-- **AND** do not overwrite existing archive
+- **当** 归档变更时
+- **那么** 执行以下步骤：
+  1. 如果 archive/ 目录不存在则创建
+  2. 使用当前日期生成目标名称 `YYYY-MM-DD-[change-name]`
+  3. 检查目标目录是否已存在
+  4. 从变更的未来状态规范更新主规范（参见下面的规范更新过程）
+  5. 将整个变更目录移动到归档位置
 
-#### Scenario: Successful archive
+#### 场景：归档已存在
 
-- **WHEN** move succeeds
-- **THEN** display success message with archived name and list of updated specs
+- **当** 目标归档已存在时
+- **那么** 以错误消息失败
+- **且** 不要覆盖现有归档
 
-### Requirement: Spec Update Process
+#### 场景：归档成功
 
-Before moving the change to archive, the command SHALL apply delta changes to main specs to reflect the deployed reality.
+- **当** 移动成功时
+- **那么** 显示包含归档名称和已更新规范列表的成功消息
 
-#### Scenario: Applying delta changes
+### 需求：规范更新过程
 
-- **WHEN** archiving a change with delta-based specs
-- **THEN** parse and apply delta changes as defined in openspec-conventions
-- **AND** validate all operations before applying
+在将变更移动到归档之前，该命令必须将增量更改应用到主规范，以反映已部署的现实。
 
-#### Scenario: Validating delta changes
+#### 场景：应用增量更改
 
-- **WHEN** processing delta changes
-- **THEN** perform validations as specified in openspec-conventions
-- **AND** if validation fails, show specific errors and abort
+- **当** 归档带有基于增量规范的变更时
+- **那么** 按照 openspec-conventions 定义解析并应用增量更改
+- **且** 在应用之前验证所有操作
 
-#### Scenario: Conflict detection
+#### 场景：验证增量更改
 
-- **WHEN** applying deltas would create duplicate requirement headers
-- **THEN** abort with error message showing the conflict
-- **AND** suggest manual resolution
+- **当** 处理增量更改时
+- **那么** 执行 openspec-conventions 中指定的验证
+- **且** 如果验证失败，显示具体错误并中止
 
-### Requirement: Confirmation Behavior
+#### 场景：冲突检测
 
-The spec update confirmation SHALL provide clear visibility into changes before they are applied.
+- **当** 应用增量会导致重复的需求标题时
+- **那么** 用显示冲突的错误消息中止
+- **且** 建议手动解决
 
-#### Scenario: Displaying confirmation
+### 需求：确认行为
 
-- **WHEN** prompting for confirmation
-- **THEN** display a clear summary showing:
-  - Which specs will be created (new capabilities)
-  - Which specs will be updated (existing capabilities)
-  - The source path for each spec
-- **AND** format the confirmation prompt as:
+规范更新确认必须在应用更改之前提供清晰的可见性。
+
+#### 场景：显示确认
+
+- **当** 提示确认时
+- **那么** 显示清晰的摘要，包括：
+  - 将创建哪些规范（新能力）
+  - 将更新哪些规范（现有能力）
+  - 每个规范的源路径
+- **且** 将确认提示格式化为：
   ```
   The following specs will be updated:
   
@@ -113,67 +115,68 @@ The spec update confirmation SHALL provide clear visibility into changes before 
   
   Update 2 specs and archive 'add-archive-command'? [y/N]:
   ```
-#### Scenario: Handling confirmation response
 
-- **WHEN** waiting for user confirmation
-- **THEN** default to "No" for safety (require explicit "y" or "yes")
-- **AND** skip confirmation when `--yes` or `-y` flag is provided
+#### 场景：处理确认响应
 
-#### Scenario: User declines confirmation
+- **当** 等待用户确认时
+- **那么** 默认为“否”以确保安全（需要明确输入 "y" 或 "yes"）
+- **且** 当提供 `--yes` 或 `-y` 标志时跳过确认
 
-- **WHEN** user declines the confirmation
-- **THEN** abort the entire archive operation
-- **AND** display message: "Archive cancelled. No changes were made."
-- **AND** exit with non-zero status code
+#### 场景：用户拒绝确认
 
-### Requirement: Error Conditions
+- **当** 用户拒绝确认时
+- **那么** 中止整个归档操作
+- **且** 显示消息："Archive cancelled. No changes were made."
+- **且** 以非零状态码退出
 
-The command SHALL handle various error conditions gracefully.
+### 需求：错误条件
 
-#### Scenario: Handling errors
+该命令必须优雅地处理各种错误条件。
 
-- **WHEN** errors occur
-- **THEN** handle the following conditions:
-  - Missing openspec/changes/ directory
-  - Change not found
-  - Archive target already exists
-  - File system permissions issues
+#### 场景：处理错误
 
-### Requirement: Skip Specs Option
+- **当** 发生错误时
+- **那么** 处理以下情况：
+  - 缺失 openspec/changes/ 目录
+  - 未找到变更
+  - 归档目标已存在
+  - 文件系统权限问题
 
-The archive command SHALL support a `--skip-specs` flag that skips all spec update operations and proceeds directly to archiving.
+### 需求：跳过规范选项
 
-#### Scenario: Skipping spec updates with flag
+归档命令必须支持 `--skip-specs` 标志，该标志跳过所有规范更新操作并直接进行归档。
 
-- **WHEN** executing `openspec archive <change> --skip-specs`
-- **THEN** skip spec discovery and update confirmation
-- **AND** proceed directly to moving the change to archive
-- **AND** display a message indicating specs were skipped
+#### 场景：使用标志跳过规范更新
 
-### Requirement: Non-blocking confirmation
+- **当** 执行 `openspec archive <change> --skip-specs` 时
+- **那么** 跳过规范发现和更新确认
+- **且** 直接进行将变更移动到归档
+- **且** 显示一条消息表明规范已被跳过
 
-The archive operation SHALL proceed when the user declines spec updates instead of cancelling the entire operation.
+### 需求：非阻塞确认
 
-#### Scenario: User declines spec update confirmation
+当用户拒绝规范更新时，归档操作必须继续，而不是取消整个操作。
 
-- **WHEN** the user declines spec update confirmation
-- **THEN** skip spec updates
-- **AND** continue with the archive operation
-- **AND** display a success message indicating specs were not updated
+#### 场景：用户拒绝规范更新确认
 
-### Requirement: Display Output
+- **当** 用户拒绝规范更新确认时
+- **那么** 跳过规范更新
+- **且** 继续归档操作
+- **且** 显示成功消息表明规范未更新
 
-The command SHALL provide clear feedback about delta operations.
+### 需求：显示输出
 
-#### Scenario: Showing delta application
+该命令必须提供关于增量操作的清晰反馈。
 
-- **WHEN** applying delta changes
-- **THEN** display for each spec:
-  - Number of requirements added
-  - Number of requirements modified
-  - Number of requirements removed
-  - Number of requirements renamed
-- **AND** use standard output symbols (+ ~ - →) as defined in openspec-conventions:
+#### 场景：显示增量应用
+
+- **当** 应用增量更改时
+- **那么** 为每个规范显示：
+  - 添加的需求数量
+  - 修改的需求数量
+  - 移除的需求数量
+  - 重命名的需求数量
+- **且** 使用 openspec-conventions 中定义的标准输出符号 (+ ~ - →)：
   ```
   Applying changes to specs/user-auth/spec.md:
     + 2 added
@@ -182,29 +185,29 @@ The command SHALL provide clear feedback about delta operations.
     → 1 renamed
   ```
 
-### Requirement: Archive Validation
+### 需求：归档验证
 
-The archive command SHALL validate changes before applying them to ensure data integrity.
+归档命令必须在应用变更之前验证它们，以确保数据完整性。
 
-#### Scenario: Pre-archive validation
+#### 场景：归档前验证
 
-- **WHEN** executing `openspec archive change-name`
-- **THEN** validate the change structure first
-- **AND** only proceed if validation passes
-- **AND** show validation errors if it fails
+- **当** 执行 `openspec archive change-name` 时
+- **那么** 首先验证变更结构
+- **且** 仅当验证通过时才继续
+- **且** 如果失败则显示验证错误
 
-#### Scenario: Force archive without validation
+#### 场景：强制归档不验证
 
-- **WHEN** executing `openspec archive change-name --no-validate`
-- **THEN** skip validation (unsafe mode)
-- **AND** show warning about skipping validation
+- **当** 执行 `openspec archive change-name --no-validate` 时
+- **那么** 跳过验证（不安全模式）
+- **且** 显示关于跳过验证的警告
 
-## Why These Decisions
+## 为什么做出这些决定
 
-**Interactive selection**: Reduces typing and helps users see available changes
-**Task checking**: Prevents accidental archiving of incomplete work
-**Date prefixing**: Maintains chronological order and prevents naming conflicts
-**No overwrite**: Preserves historical archives and prevents data loss
-**Spec updates before archiving**: Specs in the main directory represent current reality; when a change is deployed and archived, its future state specs become the new reality and must replace the main specs
-**Confirmation for spec updates**: Provides visibility into what will change, prevents accidental overwrites, and ensures users understand the impact before specs are modified
-**--yes flag for automation**: Allows CI/CD pipelines to archive without interactive prompts while maintaining safety by default for manual use
+**交互式选择**：减少打字并帮助用户查看可用变更
+**任务检查**：防止意外归档未完成的工作
+**日期前缀**：保持时间顺序并防止命名冲突
+**不覆盖**：保留历史归档并防止数据丢失
+**归档前更新规范**：主目录中的规范代表当前的现实；当变更部署并归档时，其未来状态规范成为新的现实，必须替换主规范
+**规范更新确认**：提供即将发生更改的可见性，防止意外覆盖，并确保用户在修改规范之前了解影响
+**用于自动化的 --yes 标志**：允许 CI/CD 管道在没有交互式提示的情况下进行归档，同时保持手动使用的默认安全性

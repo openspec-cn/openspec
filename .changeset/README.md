@@ -1,26 +1,26 @@
 # Changesets
 
-This directory is managed by [Changesets](https://github.com/changesets/changesets).
+此目录由 [Changesets](https://github.com/changesets/changesets) 管理。
 
-## Quick Start
+## 快速开始
 
 ```bash
 pnpm changeset
 ```
 
-Follow the prompts to select version bump type and describe your changes.
+按照提示选择版本升级类型并描述你的变更。
 
-## Workflow
+## 工作流
 
-1. **Add a changeset** — Run `pnpm changeset` locally before or after your PR
-2. **Version PR** — CI opens/updates a "Version Packages" PR when changesets merge to main
-3. **Release** — Merging the Version PR triggers npm publish and GitHub Release
+1. **添加 changeset** — 在提交 PR 之前或之后在本地运行 `pnpm changeset`
+2. **版本 PR** — 当 changesets 合并到主分支时，CI 会打开/更新一个 "Version Packages" PR
+3. **发布** — 合并版本 PR 会触发 npm 发布和 GitHub Release
 
-> **Note:** Contributors only need to run `pnpm changeset`. Versioning (`changeset version`) and publishing happen automatically in CI.
+> **注意：** 贡献者只需要运行 `pnpm changeset`。版本控制 (`changeset version`) 和发布在 CI 中自动发生。
 
-## Template
+## 模板
 
-Use this structure for your changeset content:
+使用此结构作为你的 changeset 内容：
 
 ```markdown
 ---
@@ -29,67 +29,67 @@ Use this structure for your changeset content:
 
 ### New Features
 
-- **Feature name** — What users can now do
+- **Feature name** — 用户现在可以做什么
 
 ### Bug Fixes
 
-- Fixed issue where X happened when Y
+- 修复了当 Y 时发生 X 的问题
 
 ### Breaking Changes
 
-- `oldMethod()` has been removed, use `newMethod()` instead
+- `oldMethod()` 已被移除，请改用 `newMethod()`
 
 ### Deprecations
 
-- `legacyOption` is deprecated and will be removed in v2.0
+- `legacyOption` 已弃用，将在 v2.0 中移除
 
 ### Other
 
-- Internal refactoring of X for better performance
+- 内部重构 X 以获得更好的性能
 ```
 
-Include only the sections relevant to your change.
+仅包含与你的变更相关的部分。
 
-## Version Bump Guide
+## 版本升级指南
 
-| Type | When to use | Example |
+| 类型 | 何时使用 | 示例 |
 |------|-------------|---------|
-| `patch` | Bug fixes, small improvements | Fixed crash when config missing |
-| `minor` | New features, non-breaking additions | Added `--verbose` flag |
-| `major` | Breaking changes, removed features | Renamed `init` to `setup` |
+| `patch` | Bug 修复，小改进 | 修复缺少配置时的崩溃 |
+| `minor` | 新功能，非破坏性增加 | 添加 `--verbose` 标志 |
+| `major` | 破坏性变更，移除功能 | 将 `init` 重命名为 `setup` |
 
-## When to Create a Changeset
+## 何时创建 Changeset
 
-**Create one for:**
-- New features or commands
-- Bug fixes that affect users
-- Breaking changes or deprecations
-- Performance improvements users would notice
+**为以下情况创建：**
+- 新功能或命令
+- 影响用户的 Bug 修复
+- 破坏性变更或弃用
+- 用户能感知到的性能改进
 
-**Skip for:**
-- Documentation-only changes
-- Test additions/fixes
-- Internal refactoring with no user impact
-- CI/tooling changes
+**跳过以下情况：**
+- 仅文档变更
+- 测试添加/修复
+- 无用户影响的内部重构
+- CI/工具变更
 
-## Writing Good Descriptions
+## 编写好的描述
 
-**Do:** Write for users, not developers
+**推荐：** 为用户写，而不是开发者
 ```markdown
-- **Shell completions** — Tab completion now available for Bash, Fish, and PowerShell
+- **Shell 补全** — 现在支持 Bash, Fish 和 PowerShell 的 Tab 补全
 ```
 
-**Don't:** Write implementation details
+**不推荐：** 写实施细节
 ```markdown
-- Added ShellCompletionGenerator class with Bash/Fish/PowerShell subclasses
+- 添加 ShellCompletionGenerator 类及其 Bash/Fish/PowerShell 子类
 ```
 
-**Do:** Explain the impact
+**推荐：** 解释影响
 ```markdown
-- Fixed config loading to respect `XDG_CONFIG_HOME` on Linux
+- 修复配置加载以在 Linux 上遵循 `XDG_CONFIG_HOME`
 ```
 
-**Don't:** Just reference the fix
+**不推荐：** 仅引用修复
 ```markdown
-- Fixed #123
+- 修复 #123
 ```

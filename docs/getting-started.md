@@ -1,91 +1,91 @@
-# Getting Started
+# 快速开始 (Getting Started)
 
-This guide explains how OpenSpec works after you've installed and initialized it. For installation instructions, see the [main README](../README.md#quick-start).
+本指南解释了在安装和初始化 OpenSpec 后它如何工作。关于安装说明，请参阅[主 README](../README.md#quick-start)。
 
-## How It Works
+## 工作原理
 
-OpenSpec helps you and your AI coding assistant agree on what to build before any code is written. The workflow follows a simple pattern:
+OpenSpec 帮助你和你的 AI 编程助手在编写任何代码之前就构建内容达成一致。工作流遵循一个简单的模式：
 
 ```
 ┌────────────────────┐
-│ Start a Change     │  /opsx:new
+│   启动变更 (Change)  │  /opsx:new
 └────────┬───────────┘
          │
          ▼
 ┌────────────────────┐
-│ Create Artifacts   │  /opsx:ff or /opsx:continue
+│    创建工件 (Artifacts)  │  /opsx:ff 或 /opsx:continue
 │ (proposal, specs,  │
 │  design, tasks)    │
 └────────┬───────────┘
          │
          ▼
 ┌────────────────────┐
-│ Implement Tasks    │  /opsx:apply
+│    执行任务 (Implement)  │  /opsx:apply
 │ (AI writes code)   │
 └────────┬───────────┘
          │
          ▼
 ┌────────────────────┐
-│ Archive & Merge    │  /opsx:archive
-│ Specs              │
+│    归档并合并 (Archive)  │  /opsx:archive
+│    规范 (Specs)          │
 └────────────────────┘
 ```
 
-## What OpenSpec Creates
+## OpenSpec 创建了什么
 
-After running `openspec init`, your project has this structure:
+运行 `openspec init` 后，你的项目结构如下：
 
 ```
 openspec/
-├── specs/              # Source of truth (your system's behavior)
+├── specs/              # 事实来源 (你系统的行为)
 │   └── <domain>/
 │       └── spec.md
-├── changes/            # Proposed updates (one folder per change)
+├── changes/            # 提议的更新 (每个变更一个文件夹)
 │   └── <change-name>/
 │       ├── proposal.md
 │       ├── design.md
 │       ├── tasks.md
-│       └── specs/      # Delta specs (what's changing)
+│       └── specs/      # 增量规范 (变动内容)
 │           └── <domain>/
 │               └── spec.md
-└── config.yaml         # Project configuration (optional)
+└── config.yaml         # 项目配置 (可选)
 ```
 
-**Two key directories:**
+**两个关键目录：**
 
-- **`specs/`** - The source of truth. These specs describe how your system currently behaves. Organized by domain (e.g., `specs/auth/`, `specs/payments/`).
+- **`specs/`** - 事实来源。这些规范描述了你的系统当前的行为。按领域组织（例如 `specs/auth/`, `specs/payments/`）。
 
-- **`changes/`** - Proposed modifications. Each change gets its own folder with all related artifacts. When a change is complete, its specs merge into the main `specs/` directory.
+- **`changes/`** - 提议的修改。每个变更都有自己的文件夹，包含所有相关工件。当变更完成后，其规范会合并到主 `specs/` 目录中。
 
-## Understanding Artifacts
+## 理解工件 (Artifacts)
 
-Each change folder contains artifacts that guide the work:
+每个变更文件夹包含指导工作的工件：
 
-| Artifact | Purpose |
-|----------|---------|
-| `proposal.md` | The "why" and "what" - captures intent, scope, and approach |
-| `specs/` | Delta specs showing ADDED/MODIFIED/REMOVED requirements |
-| `design.md` | The "how" - technical approach and architecture decisions |
-| `tasks.md` | Implementation checklist with checkboxes |
+| 工件 | 用途 |
+|------|------|
+| `proposal.md` | "为什么"和"是什么" - 捕捉意图、范围和方法 |
+| `specs/` | 增量规范，显示**新增/修改/移除**的需求 |
+| `design.md` | "怎么做" - 技术方案和架构决策 |
+| `tasks.md` | 带复选框的实施清单 |
 
-**Artifacts build on each other:**
+**工件相互构建：**
 
 ```
 proposal ──► specs ──► design ──► tasks ──► implement
    ▲           ▲          ▲                    │
    └───────────┴──────────┴────────────────────┘
-            update as you learn
+            在学习过程中更新
 ```
 
-You can always go back and refine earlier artifacts as you learn more during implementation.
+你总是可以在实施过程中根据学到的新知识回去完善早期的工件。
 
-## How Delta Specs Work
+## 增量规范 (Delta Specs) 如何工作
 
-Delta specs are the key concept in OpenSpec. They show what's changing relative to your current specs.
+增量规范是 OpenSpec 中的核心概念。它们展示了相对于当前规范有哪些变化。
 
-### The Format
+### 格式
 
-Delta specs use sections to indicate the type of change:
+增量规范使用章节来指示变更类型：
 
 ```markdown
 # Delta for Auth
@@ -117,21 +117,21 @@ The system SHALL expire sessions after 30 minutes of inactivity.
 (Deprecated in favor of 2FA)
 ```
 
-### What Happens on Archive
+### 归档时发生什么
 
-When you archive a change:
+当你归档一个变更时：
 
-1. **ADDED** requirements are appended to the main spec
-2. **MODIFIED** requirements replace the existing version
-3. **REMOVED** requirements are deleted from the main spec
+1. **ADDED** (新增) 需求被追加到主规范中
+2. **MODIFIED** (修改) 需求替换现有版本
+3. **REMOVED** (移除) 需求从主规范中删除
 
-The change folder moves to `openspec/changes/archive/` for audit history.
+变更文件夹会移动到 `openspec/changes/archive/` 以保留审计历史。
 
-## Example: Your First Change
+## 示例：你的第一个变更
 
-Let's walk through adding dark mode to an application.
+让我们演示如何为应用程序添加暗黑模式。
 
-### 1. Start the Change
+### 1. 启动变更
 
 ```
 You: /opsx:new add-dark-mode
@@ -140,9 +140,9 @@ AI:  Created openspec/changes/add-dark-mode/
      Ready to create: proposal
 ```
 
-### 2. Create Artifacts
+### 2. 创建工件
 
-Use `/opsx:ff` (fast-forward) to create all planning artifacts at once:
+使用 `/opsx:ff` (快进) 一次性创建所有规划工件：
 
 ```
 You: /opsx:ff
@@ -155,9 +155,9 @@ AI:  Creating artifacts for add-dark-mode...
      Ready for implementation!
 ```
 
-### 3. What Gets Created
+### 3. 创建了什么
 
-**proposal.md** - Captures the intent:
+**proposal.md** - 捕捉意图：
 
 ```markdown
 # Proposal: Add Dark Mode
@@ -176,7 +176,7 @@ Use CSS custom properties for theming with a React context
 for state management.
 ```
 
-**specs/ui/spec.md** - Delta showing new requirements:
+**specs/ui/spec.md** - 显示新需求的增量规范：
 
 ```markdown
 # Delta for UI
@@ -198,7 +198,7 @@ The system SHALL allow users to choose between light and dark themes.
 - THEN the system's preferred color scheme is used
 ```
 
-**tasks.md** - Implementation checklist:
+**tasks.md** - 实施清单：
 
 ```markdown
 # Tasks
@@ -218,7 +218,7 @@ The system SHALL allow users to choose between light and dark themes.
 - [ ] 3.2 Update components to use CSS variables
 ```
 
-### 4. Implement
+### 4. 实施
 
 ```
 You: /opsx:apply
@@ -232,9 +232,9 @@ AI:  Working through tasks...
      All tasks complete!
 ```
 
-During implementation, if you discover the design needs adjustment, just update the artifact and continue.
+在实施过程中，如果你发现设计需要调整，只需更新工件并继续。
 
-### 5. Archive
+### 5. 归档
 
 ```
 You: /opsx:archive
@@ -245,29 +245,29 @@ AI:  Archiving add-dark-mode...
      Done! Ready for the next feature.
 ```
 
-Your delta specs are now part of the main specs, documenting how your system works.
+你的增量规范现在已成为主规范的一部分，记录了你的系统是如何工作的。
 
-## Verifying and Reviewing
+## 验证和审查
 
-Use the CLI to check on your changes:
+使用 CLI 检查你的变更：
 
 ```bash
-# List active changes
+# 列出活跃变更
 openspec list
 
-# View change details
+# 查看变更详情
 openspec show add-dark-mode
 
-# Validate spec formatting
+# 验证规范格式
 openspec validate add-dark-mode
 
-# Interactive dashboard
+# 交互式仪表板
 openspec view
 ```
 
-## Next Steps
+## 下一步
 
-- [Workflows](workflows.md) - Common patterns and when to use each command
-- [Commands](commands.md) - Full reference for all slash commands
-- [Concepts](concepts.md) - Deeper understanding of specs, changes, and schemas
-- [Customization](customization.md) - Make OpenSpec work your way
+- [工作流 (Workflows)](workflows.md) - 常见模式以及何时使用每个命令
+- [命令 (Commands)](commands.md) - 所有斜杠命令的完整参考
+- [核心概念 (Concepts)](concepts.md) - 深入理解规范、变更和模式
+- [定制化 (Customization)](customization.md) - 让 OpenSpec 按照你的方式工作

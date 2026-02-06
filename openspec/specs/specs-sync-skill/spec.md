@@ -1,72 +1,72 @@
-# specs-sync-skill Specification
+# specs-sync-skill 规范
 
-## Purpose
-Defines the agent skill for syncing delta specs from changes to main specs.
+## 目的
+定义用于将增量规范从变更同步到主规范的代理技能。
 
-## Requirements
+## 需求
 
-### Requirement: Specs Sync Skill
-The system SHALL provide an `/opsx:sync` skill that syncs delta specs from a change to the main specs.
+### 需求：Specs Sync 技能
+系统必须提供 `/opsx:sync` 技能，用于将增量规范从变更同步到主规范。
 
-#### Scenario: Sync delta specs to main specs
-- **WHEN** agent executes `/opsx:sync` with a change name
-- **THEN** the agent reads delta specs from `openspec/changes/<name>/specs/`
-- **AND** reads corresponding main specs from `openspec/specs/`
-- **AND** reconciles main specs to match what the deltas describe
+#### 场景：将增量规范同步到主规范
+- **当** 代理使用变更名称执行 `/opsx:sync` 时
+- **那么** 代理从 `openspec/changes/<name>/specs/` 读取增量规范
+- **并且** 从 `openspec/specs/` 读取相应的主规范
+- **并且** 协调主规范以匹配增量描述的内容
 
-#### Scenario: Idempotent operation
-- **WHEN** agent executes `/opsx:sync` multiple times on the same change
-- **THEN** the result is the same as running it once
-- **AND** no duplicate requirements are created
+#### 场景：幂等操作
+- **当** 代理在同一变更上多次执行 `/opsx:sync` 时
+- **那么** 结果与运行一次相同
+- **并且** 不创建重复需求
 
-#### Scenario: Change selection prompt
-- **WHEN** agent executes `/opsx:sync` without specifying a change
-- **THEN** the agent prompts user to select from available changes
-- **AND** shows changes that have delta specs
+#### 场景：变更选择提示
+- **当** 代理执行 `/opsx:sync` 但未指定变更时
+- **那么** 代理提示用户从可用变更中选择
+- **并且** 显示具有增量规范的变更
 
-### Requirement: Delta Reconciliation Logic
-The agent SHALL reconcile main specs with delta specs using the delta operation headers.
+### 需求：增量协调逻辑
+代理必须使用增量操作标题协调主规范与增量规范。
 
-#### Scenario: ADDED requirements
-- **WHEN** delta contains `## ADDED Requirements` with a requirement
-- **AND** the requirement does not exist in main spec
-- **THEN** add the requirement to main spec
+#### 场景：ADDED 需求
+- **当** 增量包含带有需求的 `## ADDED Requirements` 时
+- **并且** 主规范中不存在该需求
+- **那么** 将需求添加到主规范
 
-#### Scenario: ADDED requirement already exists
-- **WHEN** delta contains `## ADDED Requirements` with a requirement
-- **AND** a requirement with the same name already exists in main spec
-- **THEN** update the existing requirement to match the delta version
+#### 场景：ADDED 需求已存在
+- **当** 增量包含带有需求的 `## ADDED Requirements` 时
+- **并且** 主规范中已存在同名需求
+- **那么** 更新现有需求以匹配增量版本
 
-#### Scenario: MODIFIED requirements
-- **WHEN** delta contains `## MODIFIED Requirements` with a requirement
-- **AND** the requirement exists in main spec
-- **THEN** replace the requirement in main spec with the delta version
+#### 场景：MODIFIED 需求
+- **当** 增量包含带有需求的 `## MODIFIED Requirements` 时
+- **并且** 主规范中存在该需求
+- **那么** 用增量版本替换主规范中的需求
 
-#### Scenario: REMOVED requirements
-- **WHEN** delta contains `## REMOVED Requirements` with a requirement name
-- **AND** the requirement exists in main spec
-- **THEN** remove the requirement from main spec
+#### 场景：REMOVED 需求
+- **当** 增量包含带有需求名称的 `## REMOVED Requirements` 时
+- **并且** 主规范中存在该需求
+- **那么** 从主规范中移除该需求
 
-#### Scenario: RENAMED requirements
-- **WHEN** delta contains `## RENAMED Requirements` with FROM:/TO: format
-- **AND** the FROM requirement exists in main spec
-- **THEN** rename the requirement to the TO name
+#### 场景：RENAMED 需求
+- **当** 增量包含带有 FROM:/TO: 格式的 `## RENAMED Requirements` 时
+- **并且** FROM 需求存在于主规范中
+- **那么** 将需求重命名为 TO 名称
 
-#### Scenario: New capability spec
-- **WHEN** delta spec exists for a capability not in main specs
-- **THEN** create new main spec file at `openspec/specs/<capability>/spec.md`
+#### 场景：新功能规范
+- **当** 对于主规范中没有的功能存在增量规范时
+- **那么** 在 `openspec/specs/<capability>/spec.md` 创建新的主规范文件
 
-### Requirement: Skill Output
-The skill SHALL provide clear feedback on what was applied.
+### 需求：技能输出
+技能必须提供关于已应用内容的清晰反馈。
 
-#### Scenario: Show applied changes
-- **WHEN** reconciliation completes successfully
-- **THEN** display summary of changes per capability:
-  - Number of requirements added
-  - Number of requirements modified
-  - Number of requirements removed
-  - Number of requirements renamed
+#### 场景：显示已应用的变更
+- **当** 协调成功完成时
+- **那么** 显示每个功能的变更摘要：
+  - 添加的需求数量
+  - 修改的需求数量
+  - 移除的需求数量
+  - 重命名的需求数量
 
-#### Scenario: No changes needed
-- **WHEN** main specs already match delta specs
-- **THEN** display "Specs already in sync - no changes needed"
+#### 场景：无需变更
+- **当** 主规范已与增量规范匹配时
+- **那么** 显示 "Specs already in sync - no changes needed"（规范已同步 - 无需变更）

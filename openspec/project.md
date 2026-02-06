@@ -1,53 +1,53 @@
-# OpenSpec Project Overview
+# OpenSpec 项目概览 (OpenSpec Project Overview)
 
-A minimal CLI tool that helps developers set up OpenSpec file structures and keep AI instructions updated. The AI tools themselves handle all the change management complexity by working directly with markdown files.
+一个最小化的 CLI 工具，帮助开发者设置 OpenSpec 文件结构并保持 AI 指令更新。AI 工具本身通过直接处理 markdown 文件来处理所有的变更管理复杂性。
 
-## Technology Stack
-- Language: TypeScript
-- Runtime: Node.js (≥20.19.0, ESM modules)
-- Package Manager: pnpm
-- CLI Framework: Commander.js
-- User Interaction: @inquirer/prompts
-- Distribution: npm package
+## 技术栈
+- 语言: TypeScript
+- 运行时: Node.js (≥20.19.0, ESM modules)
+- 包管理器: pnpm
+- CLI 框架: Commander.js
+- 用户交互: @inquirer/prompts
+- 分发: npm package
 
-## Project Structure
+## 项目结构
 ```
 src/
-├── cli/        # CLI command implementations
-├── core/       # Core OpenSpec logic (templates, structure)
-└── utils/      # Shared utilities (file operations, rollback)
+├── cli/        # CLI 命令实现
+├── core/       # 核心 OpenSpec 逻辑 (模板, 结构)
+└── utils/      # 共享实用程序 (文件操作, 回滚)
 
-dist/           # Compiled output (gitignored)
+dist/           # 编译输出 (gitignored)
 ```
 
-## Conventions
-- TypeScript strict mode enabled
-- Async/await for all asynchronous operations
-- Minimal dependencies principle
-- Clear separation of CLI, core logic, and utilities
-- AI-friendly code with descriptive names
+## 约定
+- 启用 TypeScript 严格模式
+- 对所有异步操作使用 async/await
+- 最小依赖原则
+- CLI、核心逻辑和实用程序清晰分离
+- 对 AI 友好的代码，使用描述性名称
 
-## Error Handling
-- Let errors bubble up to CLI level for consistent user messaging
-- Use native Error types with descriptive messages
-- Exit with appropriate codes: 0 (success), 1 (general error), 2 (misuse)
-- No try-catch in utility functions, handle at command level
+## 错误处理
+- 让错误冒泡到 CLI 级别以获得一致的用户消息
+- 使用带有描述性消息的原生 Error 类型
+- 以适当的代码退出：0 (成功), 1 (一般错误), 2 (误用)
+- 实用程序函数中没有 try-catch，在命令级别处理
 
-## Logging
-- Use console methods directly (no logging library)
-- console.log() for normal output
-- console.error() for errors (outputs to stderr)
-- No verbose/debug modes initially (keep it simple)
+## 日志记录
+- 直接使用 console 方法（无日志库）
+- console.log() 用于正常输出
+- console.error() 用于错误（输出到 stderr）
+- 初始没有详细/调试模式（保持简单）
 
-## Testing Strategy
-- Manual testing via `pnpm link` during development
-- Smoke tests for critical paths only (init, help commands)
-- No unit tests initially - add when complexity grows
-- Test commands: `pnpm test:smoke` (when added)
+## 测试策略
+- 开发期间通过 `pnpm link` 进行手动测试
+- 仅对关键路径（init, help 命令）进行冒烟测试
+- 初始没有单元测试 - 当复杂性增加时添加
+- 测试命令：`pnpm test:smoke` (添加后)
 
-## Development Workflow
-- Use pnpm for all package management
-- Run `pnpm run build` to compile TypeScript
-- Run `pnpm run dev` for development mode
-- Test locally with `pnpm link`
-- Follow OpenSpec's own change-driven development process
+## 开发工作流
+- 使用 pnpm 进行所有包管理
+- 运行 `pnpm run build` 编译 TypeScript
+- 运行 `pnpm run dev` 进行开发模式
+- 使用 `pnpm link` 本地测试
+- 遵循 OpenSpec 自己的变更驱动开发流程

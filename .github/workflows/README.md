@@ -1,20 +1,18 @@
 # Github Workflows
 
-## Testing CI Locally
+## 本地测试 CI
 
-Test GitHub Actions workflows locally using [act](https://nektosact.com/):
+使用 [act](https://nektosact.com/) 在本地测试 GitHub Actions 工作流：
 
 ```bash
-# Test all PR checks
+# 测试所有 PR 检查
 act pull_request
 
-# Test specific job
+# 测试特定作业
 act pull_request -j nix-flake-validate
 
-# Dry run to see what would execute
+# 空运行以查看将执行的内容
 act pull_request --dryrun
 ```
 
-The `.actrc` file configures act to use the appropriate Docker image.
-
-
+`.actrc` 文件配置 act 使用适当的 Docker 镜像。
