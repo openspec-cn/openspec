@@ -9,25 +9,25 @@
 ### npm
 
 ```bash
-npm install -g @fission-ai/openspec@latest
+npm install -g openspec-cn/openspec
 ```
 
 ### pnpm
 
 ```bash
-pnpm add -g @fission-ai/openspec@latest
+pnpm add -g openspec-cn/openspec
 ```
 
 ### yarn
 
 ```bash
-yarn global add @fission-ai/openspec@latest
+yarn global add openspec-cn/openspec
 ```
 
 ### bun
 
 ```bash
-bun add -g @fission-ai/openspec@latest
+bun add -g openspec-cn/openspec
 ```
 
 ## Nix

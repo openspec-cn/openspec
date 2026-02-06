@@ -144,7 +144,7 @@ openspec update [path] [options]
 
 ```bash
 # npm 升级后更新指令文件
-npm update @fission-ai/openspec
+npm install -g openspec-cn/openspec
 openspec update
 ```
 

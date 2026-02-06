@@ -9,7 +9,6 @@
 
 <p align="center">
   <a href="https://github.com/openspec-cn/openspec/actions/workflows/ci.yml"><img alt="CI" src="https://github.com/openspec-cn/openspec/actions/workflows/ci.yml/badge.svg" /></a>
-  <a href="https://www.npmjs.com/package/@fission-ai/openspec"><img alt="npm version" src="https://img.shields.io/npm/v/@fission-ai/openspec?style=flat-square" /></a>
   <a href="./LICENSE"><img alt="License: MIT" src="https://img.shields.io/badge/License-MIT-blue.svg?style=flat-square" /></a>
   <a href="https://discord.gg/YctCnvvshC"><img alt="Discord" src="https://img.shields.io/discord/1411657095639601154?style=flat-square&logo=discord&logoColor=white&label=Discord&suffix=%20online" /></a>
 </p>
@@ -18,7 +17,6 @@
 <summary><strong>最受欢迎的规范框架。</strong></summary>
 
 [![Stars](https://img.shields.io/github/stars/openspec-cn/openspec?style=flat-square&label=Stars)](https://github.com/openspec-cn/openspec/stargazers)
-[![Downloads](https://img.shields.io/npm/dm/@fission-ai/openspec?style=flat-square&label=Downloads/mo)](https://www.npmjs.com/package/@fission-ai/openspec)
 [![Contributors](https://img.shields.io/github/contributors/openspec-cn/openspec?style=flat-square&label=Contributors)](https://github.com/openspec-cn/openspec/graphs/contributors)
 
 </details>
@@ -91,7 +89,7 @@ AI:  已归档至 openspec/changes/archive/2025-01-23-add-dark-mode/
 全局安装 OpenSpec：
 
 ```bash
-npm install -g @fission-ai/openspec@latest
+npm install -g openspec-cn/openspec
 ```
 
 然后导航到你的项目目录并初始化：
@@ -141,7 +139,7 @@ AI 编码助手很强大，但当需求仅存在于聊天记录中时，它们�
 **升级包**
 
 ```bash
-npm install -g @fission-ai/openspec@latest
+npm install -g openspec-cn/openspec
 ```
 
 **刷新 Agent 指令**
@@ -195,6 +193,16 @@ OpenSpec 收集匿名的使用统计信息。
 查看 [MAINTAINERS.md](MAINTAINERS.md) 获取帮助指导项目的核心维护者和顾问列表。
 
 </details>
+
+## 致谢与声明
+
+本项目是 [OpenSpec](https://github.com/Fission-AI/OpenSpec) 的中文本地化版本。
+
+- **致谢**：衷心感谢 Fission AI 团队及 OpenSpec 开源社区创造了如此优秀的工具。
+- **目的**：本仓库旨在降低中国开发者的使用门槛，并验证和优化中文 LLM 模型在规范驱动开发中的表现。
+- **数据收集**：为了更好地服务中国开发者，我们后续将遥测数据地址更改为中国地址，用于收集的数据仅用于产品改进，并会定期同步回原项目以贡献社区，当前阶段仍然沿用原有项目遥测地址。
+- **版权声明**：OpenSpec 的原始创意、架构设计及核心代码版权归原作者及团队所有。本项目仅做本地化翻译及适配工作。
+- **侵权处理**：如果本项目有任何侵犯原作者权益的内容，请联系我们进行删除。
 
 ## 许可证
 
